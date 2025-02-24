@@ -1,7 +1,15 @@
+import Modal from "../components/modal";
 import App from "../layouts/app";
 import { BriefcaseIcon } from "@heroicons/react/16/solid";
+import Donation from "../partials/Donation";
+import { useState } from "react";
 
 function Index() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
   const cards = [
     {
       title: "Urugo Women Opportunity Center",
@@ -98,7 +106,10 @@ function Index() {
               move from crisis and poverty to stability and economic
               self-reliance.
             </p>
-            <button className="btn-primary text-white px-12 py-3 rounded-full hover:bg-orange-600">
+            <button
+              onClick={openModal}
+              className="btn-primary text-white px-12 py-3 rounded-full hover:bg-orange-600"
+            >
               Donate
             </button>
           </div>
@@ -187,6 +198,9 @@ function Index() {
           </div>
         </section>
       </div>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <Donation />
+      </Modal>
     </App>
   );
 }

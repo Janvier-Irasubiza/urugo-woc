@@ -6,6 +6,10 @@ import Accommodations from "../pages/accommodations";
 import Dining from "../pages/dining";
 import Marketplace from "../pages/marketplace";
 import Cultural from "../pages/cultural";
+import ProductInfo from "../pages/product-info";
+import AccomInfo from "../pages/accom-info";
+import EventDetails from "../pages/info";
+import NewsPostDetails from "../pages/news";
 
 function Router() {
   return (
@@ -18,6 +22,10 @@ function Router() {
         <Route path="/dining" element={<Dining />} />
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/cultural" element={<Cultural />} />
+        <Route path="/info" element={<EventDetails />} />
+        <Route path="/product-info" element={<ProductInfo />} />
+        <Route path="/accom-info" element={<AccomInfo />} />
+        <Route path="/news" element={<NewsPostDetails />} />
       </Routes>
     </BrowserRouter>
   );
