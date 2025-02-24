@@ -13,6 +13,7 @@ phone_regex = RegexValidator(
 class RoleChoices(models.TextChoices):
     SUPERUSER = 'superuser', _('Superuser')
     USER = 'user', _('User')
+    USTAFF = 'ustaff', _('User Staff')
 
 # Blog Types
 class BlogTypes(models.TextChoices):
@@ -72,6 +73,11 @@ class User(AbstractUser):
         choices=RoleChoices.choices,
         default=RoleChoices.USER
     )
+    title = models.CharField(_('title'), max_length=100, blank=True, null=True)
+    bio = models.TextField(_('bio'), blank=True, null=True)
+    avatar = models.ImageField(_('avatar'), upload_to='avatars/', blank=True, null=True)
+    account_active = models.BooleanField(_('active'), default=True)
+    social_links = models.JSONField(_('social links'), blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
