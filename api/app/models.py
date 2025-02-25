@@ -20,6 +20,13 @@ class BlogTypes(models.TextChoices):
     EVENT = 'event', _('Event')
     BLOG = 'blog', _('Blog')
 
+class BlogStatus(models.TextChoices):
+    PUBLISHED = 'published', _('Published')
+    DRAFT = 'draft', _('Draft')
+    HAPPENING = 'happening', _('Happening')
+    UPCOMING = 'upcoming', _('Upcoming')
+    ARCHIVED = 'archived', _('Archived')
+
 # Item Types
 class ItemTypes(models.TextChoices):
     PRODUCT = 'product', _('Product')
@@ -112,11 +119,17 @@ class User(AbstractUser):
         related_query_name="custom_user",
     )
 
-# BlogPost Model
-class BlogPost(models.Model):
+    def save(self, *args, **kwargs):
+        if not self.email or self.email.strip() == '':
+            raise ValueError('Email cannot be empty')
+        super().save(*args, **kwargs)
+
+
+# Post Model
+class Post(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
-    image = models.ImageField(upload_to='images/', blank=True, null=True)
+    image = models.ImageField(upload_to='blog/', blank=True, null=True)
     type = models.CharField(
         _('type'),
         max_length=20,
@@ -127,19 +140,25 @@ class BlogPost(models.Model):
     published_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    status = models.CharField(
+        _('status'),
+        max_length=20,
+        choices=BlogStatus.choices,
+        default=BlogStatus.PUBLISHED
+    )
 
     def __str__(self):
         return self.title
 
     class Meta:
-        verbose_name = _('blog post')
-        verbose_name_plural = _('blog posts')
+        verbose_name = _('post')
+        verbose_name_plural = _('posts')
 
 # Item Model
-class Item(models.Model):
+class Listing(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    image = models.ImageField(upload_to='images/', blank=True, null=True)
+    image = models.ImageField(upload_to='listings/', blank=True, null=True)
     type = models.CharField(
         _('type'),
         max_length=20,
@@ -155,8 +174,8 @@ class Item(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = _('item')
-        verbose_name_plural = _('items')
+        verbose_name = _('listing')
+        verbose_name_plural = _('listings')
 
 # Donation Model
 class Donation(models.Model):
@@ -196,7 +215,7 @@ class Order(models.Model):
 # Order Item Model
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    item = models.ForeignKey(Listing, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
@@ -206,3 +225,16 @@ class OrderItem(models.Model):
     class Meta:
         verbose_name = _('order item')
         verbose_name_plural = _('order items')
+
+
+class Partner(models.Model):
+    name = models.CharField(max_length=100)
+    logo = models.ImageField(upload_to='partners/', blank=True, null=True)
+    url = models.URLField()
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('partner')
+        verbose_name_plural = _('partners')

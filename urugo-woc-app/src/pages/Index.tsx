@@ -2,48 +2,77 @@ import Modal from "../components/modal";
 import App from "../layouts/app";
 import { BriefcaseIcon } from "@heroicons/react/16/solid";
 import Donation from "../partials/Donation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+
+interface Post {
+  title: string;
+  description: string;
+  image: string;
+  type: string;
+}
+[];
+
+interface partners {
+  logo: string;
+  url: string;
+}
+[];
 
 function Index() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [partners, setPartners] = useState<partners[]>([]);
+
+  const fetchPosts = async () => {
+    try {
+      // Fetch data from API using axios
+      const response = await axios.get("http://localhost:8000/api/blog-posts/");
+      console.log(response.data);
+      setPosts(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchPartners = async () => {
+    try {
+      // Fetch data from API using axios
+      const response = await axios.get("http://localhost:8000/api/partners/");
+      console.log(response.data);
+      setPartners(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+    fetchPartners();
+  }, []);
+
+  const events = posts.filter((post) => post.type === "event");
+  const newsUpdates = posts.filter((post) => post.type === "blog");
 
   const openModal = () => {
     setIsModalOpen(true);
   };
-  const cards = [
+  const infoCards = [
     {
       title: "Urugo Women Opportunity Center",
       description:
-        "Es un hecho establecido hace demasiado tiempo que un lector se distraerá con el contenido del texto de un sitio mientras que mira su diseño.",
+        "is a safe environment and dedicated facilities located in Kayonza District the Eastern province of Rwanda where women can learn, build new skills, and operate businesses that directly contribute to the local communities.",
     },
     {
       title: "The Urugo Eco-Lodge",
       description:
-        "Es un hecho establecido hace demasiado tiempo que un lector se distraerá con el contenido del texto de un sitio mientras que mira su diseño.",
+        "is a part of an innovative social enterprise promoting economic empowerment for women. Set in rolling hills with spectacular views and friendly, dedicated staff, it’s the perfect place to discover rural Rwanda, stay en-route on your safari adventure, or hold your next meeting, wedding or special event.",
     },
     {
       title: "Women and Men Learning Space",
       description:
-        "Es un hecho establecido hace demasiado tiempo que un lector se distraerá con el contenido del texto de un sitio mientras que mira su diseño.",
-    },
-  ];
-
-  const events = [
-    {
-      image: "path-to-image.jpg",
-      title: "Dining, Shopping, Culture and free WiFi!",
-      description: "All guests of the Urugo Eco-Lodge enjoy complimentary WiFi",
-    },
-    {
-      image: "path-to-image.jpg",
-      title: "Meetings, Special Events & Weddings",
-      description:
-        "The center’s beautiful campus is the perfect venue to host your event",
-    },
-    {
-      image: "path-to-image.jpg",
-      title: "Spacious Safari Tents",
-      description: "Relax and unwind in our spacious luxury safari tents!",
+        "The Urugo Women’s Opportunity Center provides vocational and  life skills training for women and supports our Men’s Engagement Program, designed to build support for women’s economic and social empowerment in Rwanda.",
     },
   ];
 
@@ -54,9 +83,9 @@ function Index() {
           <span className="text-gray-500 text-xl">Hero Image Placeholder</span>
         </div>
 
-        {/* Cards Section */}
+        {/* infoCards Section */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-          {cards.map((card, index) => (
+          {infoCards.map((card, index) => (
             <div
               key={index}
               className="bg-thrd-level p-6 rounded-lg shadow-lg text-center"
@@ -127,10 +156,10 @@ function Index() {
                 <img
                   src={event.image}
                   alt={event.title}
-                  className="w-full h-40 object-cover"
+                  className="w-full h-80 object-cover"
                 />
                 <div className="p-6">
-                  <h3 className="font-semibold mb-2 text-2xl text-primary-dark">
+                  <h3 className="font-semibold mb-4 text-2xl text-primary-dark">
                     {event.title}
                   </h3>
                   <p className="text-gray-600 mb-6">{event.description}</p>
@@ -152,21 +181,21 @@ function Index() {
             News & Updates
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-lg">
-            {events.map((event, index) => (
+            {newsUpdates.map((update, index) => (
               <div
                 key={index}
                 className="bg-thrd-level rounded-lg overflow-hidden shadow-lg"
               >
                 <img
-                  src={event.image}
-                  alt={event.title}
-                  className="w-full h-40 object-cover"
+                  src={update.image}
+                  alt={update.title}
+                  className="w-full h-80 object-cover"
                 />
                 <div className="p-6">
-                  <h3 className="text-lg font-semibold mb-2 text-2xl text-primary-dark">
-                    {event.title}
+                  <h3 className="font-semibold mb-4 text-2xl text-primary-dark">
+                    {update.title}
                   </h3>
-                  <p className="text-gray-600 mb-6">{event.description}</p>
+                  <p className="text-gray-600 mb-6">{update.description}</p>
                   <a
                     href="#"
                     className="text-primary font-medium hover:underline text-lg"
@@ -183,18 +212,16 @@ function Index() {
         <section className="mt-20">
           <h2 className="text-4xl font-bold text-primary mb-6">Partners</h2>
           <div className="flex items-center justify-between gap-6">
-            {Array(6)
-              .fill(0)
-              .map((_, index) => (
+            {partners.map((partner, index) => (
+              <Link to={partner.url} target="_blank">
                 <div
                   key={index}
                   className="bg-gray-100 h-16 w-32 flex items-center justify-center rounded-lg"
                 >
-                  <span className="text-gray-500 font-semibold">
-                    Partners Logo
-                  </span>
+                  <img src={partner.logo} alt="" />
                 </div>
-              ))}
+              </Link>
+            ))}
           </div>
         </section>
       </div>

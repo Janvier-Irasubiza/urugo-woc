@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, BlogPost, Item, Donation, Order, OrderItem
+from .models import User, Post, Listing, Donation, Order, OrderItem, Partner
 
 # User Serializer
 class UserSerializer(serializers.ModelSerializer):
@@ -12,13 +12,13 @@ class BlogPostSerializer(serializers.ModelSerializer):
     published_by = UserSerializer(read_only=True)
     
     class Meta:
-        model = BlogPost
-        fields = ['id', 'title', 'description', 'image', 'type', 'published', 'published_by', 'created_at', 'updated_at']
+        model = Post
+        fields = ['id', 'title', 'description', 'image', 'type', 'published', 'published_by', 'created_at', 'updated_at', 'status']
 
 # Item Serializer
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Item
+        model = Listing
         fields = ['id', 'name', 'description', 'image', 'type', 'price', 'time_frame', 'available', 'created_at']
 
 # Donation Serializer
@@ -43,3 +43,9 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'user', 'status', 'total_price', 'items', 'created_at', 'updated_at']
+
+
+class PartnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Partner
+        fields = ['id', 'name', 'logo', 'url']
