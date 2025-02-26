@@ -4,7 +4,7 @@ import axios from "axios";
 
 interface Post {
   title: string;
-  description: string;
+  short_desc: string;
   image: string;
   type: string;
   status: string;
@@ -72,7 +72,7 @@ function Events() {
                     <h3 className="font-semibold mb-2 text-2xl text-primary-dark">
                       {event.title}
                     </h3>
-                    <p className="text-gray-600 mb-6">{event.description}</p>
+                    <p className="text-gray-600 mb-6">{event.short_desc}</p>
                     <a
                       href="#"
                       className="text-primary font-medium hover:underline"
@@ -105,7 +105,7 @@ function Events() {
                     <h3 className="font-semibold mb-2 text-2xl text-primary-dark">
                       {event.title}
                     </h3>
-                    <p className="text-gray-600 mb-6">{event.description}</p>
+                    <p className="text-gray-600 mb-6">{event.short_desc}</p>
                     <a
                       href="#"
                       className="text-primary font-medium hover:underline"

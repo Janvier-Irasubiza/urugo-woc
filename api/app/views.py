@@ -7,8 +7,10 @@ from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from django.contrib.auth import authenticate
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from .models import Dining, User, Post, Listing, Donation, Order, OrderItem, Partner
+from rest_framework.pagination import PageNumberPagination
+from .models import Dining, DiningBooking, User, Post, Listing, Donation, Order, OrderItem, Partner
 from .serializers import (
+    DiningBookingSerializer,
     DiningSerializer,
     UserSerializer, 
     BlogPostSerializer, 
@@ -79,16 +81,17 @@ class ItemViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['type', 'available']
-    search_fields = ['name', 'description']
+    search_fields = ['title', 'description']
     ordering_fields = ['price', 'created_at']
+    pagination_class = PageNumberPagination
 
 class DiningViewSet(viewsets.ModelViewSet):
     queryset = Dining.objects.all()
     serializer_class = DiningSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['name']
-    search_fields = ['name', 'location']
+    filterset_fields = ['title']
+    search_fields = ['title', 'location']
     ordering_fields = ['id']
 
 # Donation ViewSet
@@ -132,3 +135,13 @@ class PartnerViewSet(viewsets.ModelViewSet):
     filterset_fields = ['name']
     search_fields = ['name']
     ordering_fields = ['id']
+
+
+class DiningBookingViewSet(viewsets.ModelViewSet):
+    queryset = DiningBooking.objects.all()
+    serializer_class = DiningBookingSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['dining', 'user']
+    search_fields = ['dining__name', 'user__email']
+    ordering_fields = ['date', 'booking_time']

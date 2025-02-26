@@ -2,6 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 from .views import (
+    DiningBookingViewSet,
     UserViewSet,
     BlogPostViewSet,
     ItemViewSet,
@@ -22,6 +23,7 @@ router.register(r'users', UserViewSet)
 router.register(r'blog-posts', BlogPostViewSet)
 router.register(r'listings', ItemViewSet)
 router.register(r'dining', DiningViewSet)
+router.register(r'dining-bookings', DiningBookingViewSet)
 router.register(r'donations', DonationViewSet)
 router.register(r'orders', OrderViewSet)
 router.register(r'order-items', OrderItemViewSet)

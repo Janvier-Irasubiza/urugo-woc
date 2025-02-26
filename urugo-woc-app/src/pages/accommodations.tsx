@@ -5,7 +5,7 @@ import axios from "axios";
 interface Accommodation {
   image: string;
   title: string;
-  description: string;
+  short_desc: string;
   type: string;
   active: boolean;
   available: boolean;
@@ -66,7 +66,7 @@ function Accommodations() {
                     <h3 className="font-semibold mb-2 text-2xl text-primary-dark">
                       {accom.title}
                     </h3>
-                    <p className="text-gray-600 mb-6">{accom.description}</p>
+                    <p className="text-gray-600 mb-6">{accom.short_desc}</p>
                     <a
                       href="#"
                       className="text-primary font-medium hover:underline"
@@ -98,7 +98,7 @@ function Accommodations() {
                     <h3 className="font-semibold mb-2 text-2xl text-primary-dark">
                       {accom.title}
                     </h3>
-                    <p className="text-gray-600 mb-6">{accom.description}</p>
+                    <p className="text-gray-600 mb-6">{accom.short_desc}</p>
                     <a
                       href="#"
                       className="text-primary font-medium hover:underline"
@@ -130,7 +130,7 @@ function Accommodations() {
                     <h3 className="font-semibold mb-2 text-2xl text-primary-dark">
                       {accom.title}
                     </h3>
-                    <p className="text-gray-600 mb-6">{accom.description}</p>
+                    <p className="text-gray-600 mb-6">{accom.short_desc}</p>
                     <a
                       href="#"
                       className="text-primary font-medium hover:underline"

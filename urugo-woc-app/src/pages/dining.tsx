@@ -5,7 +5,7 @@ import axios from "axios";
 interface Dining {
   image: string;
   title: string;
-  description: string;
+  short_desc: string;
   category: string;
   location: string;
 }
@@ -63,7 +63,7 @@ function Dining() {
                     <h3 className="font-semibold mb-2 text-2xl text-primary-dark">
                       {dining.title}
                     </h3>
-                    <p className="text-gray-600 mb-6">{dining.description}</p>
+                    <p className="text-gray-600 mb-6">{dining.short_desc}</p>
                     <a
                       href="#"
                       className="text-primary font-medium hover:underline"
@@ -98,7 +98,7 @@ function Dining() {
                     <h3 className="font-semibold mb-2 text-2xl text-primary-dark">
                       {dining.title}
                     </h3>
-                    <p className="text-gray-600 mb-6">{dining.description}</p>
+                    <p className="text-gray-600 mb-6">{dining.short_desc}</p>
                     <a
                       href="#"
                       className="text-primary font-medium hover:underline"
@@ -132,7 +132,7 @@ function Dining() {
                     <h3 className="font-semibold mb-2 text-2xl text-primary-dark">
                       {dining.title}
                     </h3>
-                    <p className="text-gray-600 mb-6">{dining.description}</p>
+                    <p className="text-gray-600 mb-6">{dining.short_desc}</p>
                     <a
                       href="#"
                       className="text-primary font-medium hover:underline"

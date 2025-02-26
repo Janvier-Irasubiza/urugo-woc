@@ -139,6 +139,7 @@ class User(AbstractUser):
 # Post Model
 class Post(models.Model):
     title = models.CharField(max_length=100)
+    short_desc = models.TextField(blank=True, null=True)
     description = models.TextField()
     image = models.ImageField(upload_to='blog/', blank=True, null=True)
     type = models.CharField(
@@ -167,7 +168,8 @@ class Post(models.Model):
 
 # Item Model
 class Listing(models.Model):
-    name = models.CharField(max_length=100)
+    title = models.CharField(max_length=100)
+    short_desc = models.TextField(blank=True, null=True)
     description = models.TextField()
     image = models.ImageField(upload_to='listings/', blank=True, null=True)
     type = models.CharField(
@@ -190,14 +192,15 @@ class Listing(models.Model):
     )  
 
     def __str__(self):
-        return self.name
+        return self.title
 
     class Meta:
         verbose_name = _('listing')
         verbose_name_plural = _('listings')
 
 class Dining(models.Model):
-    name = models.CharField(max_length=100)
+    title = models.CharField(max_length=100)
+    short_desc = models.TextField(blank=True, null=True)
     description = models.TextField()
     image = models.ImageField(upload_to='dining/', blank=True, null=True)
     location = models.CharField(max_length=100)
@@ -213,7 +216,7 @@ class Dining(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return self.title
     
     class Meta:
         verbose_name = _('dining')
@@ -280,3 +283,17 @@ class Partner(models.Model):
     class Meta:
         verbose_name = _('partner')
         verbose_name_plural = _('partners')
+
+class DiningBooking(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='dining_bookings')
+    dining = models.ForeignKey(Dining, on_delete=models.CASCADE)
+    guests = models.PositiveIntegerField()
+    booking_time = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user.first_name} - {self.dining.title}'
+
+    class Meta:
+        verbose_name = _('dining booking')
+        verbose_name_plural = _('dining bookings')

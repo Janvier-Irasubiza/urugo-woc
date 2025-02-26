@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Dining, User, Post, Listing, Donation, Order, OrderItem, Partner
+from .models import Dining, DiningBooking, User, Post, Listing, Donation, Order, OrderItem, Partner
 
 # User Serializer
 class UserSerializer(serializers.ModelSerializer):
@@ -13,18 +13,23 @@ class BlogPostSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Post
-        fields = ['id', 'title', 'description', 'image', 'type', 'published', 'published_by', 'created_at', 'updated_at', 'status']
+        fields = ['id', 'title', 'short_desc', 'description', 'image', 'type', 'published', 'published_by', 'created_at', 'updated_at', 'status']
 
 # Item Serializer
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Listing
-        fields = ['id', 'name', 'description', 'image', 'type', 'category', 'price', 'time_frame', 'available', 'created_at']
+        fields = ['id', 'title', 'short_desc', 'description', 'image', 'type', 'category', 'price', 'time_frame', 'available', 'created_at']
 
 class DiningSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dining
-        fields = ['id', 'name', 'description', 'image', 'location', 'created_at', 'active', 'category']
+        fields = ['id', 'title', 'short_desc', 'description', 'image', 'location', 'created_at', 'active', 'category']
+
+class DiningBookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DiningBooking
+        fields = ['id', 'dining', 'user', 'date', 'booking_time', 'guests', 'created_at']
 
 # Donation Serializer
 class DonationSerializer(serializers.ModelSerializer):

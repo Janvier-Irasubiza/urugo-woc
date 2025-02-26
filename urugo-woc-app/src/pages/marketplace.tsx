@@ -1,27 +1,69 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import App from "../layouts/app";
+import axios from "axios";
+
+interface Marketplace {
+  image: string;
+  title: string;
+  short_desc: string;
+  price: number;
+  category: string;
+}
 
 function Marketplace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("Products");
-  const Marketplace = [
-    {
-      image: "path-to-image.jpg",
-      title: "Marketplace, Shopping, Culture and free WiFi!",
-      description: "All guests of the Urugo Eco-Lodge enjoy complimentary WiFi",
-    },
-    {
-      image: "path-to-image.jpg",
-      title: "Meetings, Special Marketplace & Weddings",
-      description:
-        "The center’s beautiful campus is the perfect venue to host your event",
-    },
-    {
-      image: "path-to-image.jpg",
-      title: "Spacious Safari Tents",
-      description: "Relax and unwind in our spacious luxury safari tents!",
-    },
-  ];
+  const [products, setProducts] = useState<Marketplace[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchProducts = async (page = 1) => {
+    if (page > totalPages) return;
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/listings/?type=product&page=${page}`
+      );
+      console.log(response.data);
+  
+      setProducts((prevProducts) => {
+        const newProducts = response.data.results;
+          const uniqueProducts = [...prevProducts, ...newProducts].reduce(
+          (acc, product) => {
+            if (!acc.some((item: Marketplace) => item.title === product.title)) {
+              acc.push(product);
+            }
+            return acc;
+          },
+          [] as Marketplace[]
+        );
+  
+        return uniqueProducts;
+      });
+  
+      setTotalPages(response.data.total_pages);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+
+  useEffect(() => {
+    fetchProducts(currentPage);
+  }, [currentPage]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 50
+      ) {
+        setCurrentPage((prevPage) => prevPage + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <App>
@@ -54,7 +96,7 @@ function Marketplace() {
 
         <section className="">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-lg">
-            {Marketplace.map((event, index) => (
+            {products.map((event, index) => (
               <div
                 key={index}
                 className="bg-thrd-level rounded-lg overflow-hidden shadow-lg"
@@ -62,19 +104,13 @@ function Marketplace() {
                 <img
                   src={event.image}
                   alt={event.title}
-                  className="w-full h-40 object-cover"
+                  className="w-full h-80 object-cover"
                 />
                 <div className="p-6">
                   <h3 className="font-semibold mb-2 text-2xl text-primary-dark">
                     {event.title}
                   </h3>
-                  <p className="text-gray-600 mb-6">{event.description}</p>
-                  <a
-                    href="#"
-                    className="text-primary font-medium hover:underline"
-                  >
-                    Read More
-                  </a>
+                  <p className="text-gray-600 mb-6">{event.short_desc}</p>
                 </div>
               </div>
             ))}

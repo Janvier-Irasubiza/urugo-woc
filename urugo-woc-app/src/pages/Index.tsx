@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 interface Post {
   title: string;
-  description: string;
+  short_desc: string;
   image: string;
   type: string;
 }
@@ -80,7 +80,7 @@ function Index() {
     <App>
       <div className="px-20 py-6">
         <div className="border w-full h-[474px] rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center">
-          <span className="text-gray-500 text-xl">Hero Image Placeholder</span>
+          <img src="p" alt="" />
         </div>
 
         {/* infoCards Section */}
@@ -96,11 +96,11 @@ function Index() {
               </div>
 
               {/* Title */}
-              <h3 className="text-xl font-semibold text-green-700 mb-2 text-4xl">
+              <h3 className="font-semibold text-green-700 mb-2 text-4xl">
                 {card.title}
               </h3>
 
-              {/* Description */}
+              {/* short_description */}
               <p className="text-gray-600 mt-8 text-lg">{card.description}</p>
             </div>
           ))}
@@ -162,7 +162,7 @@ function Index() {
                   <h3 className="font-semibold mb-4 text-2xl text-primary-dark">
                     {event.title}
                   </h3>
-                  <p className="text-gray-600 mb-6">{event.description}</p>
+                  <p className="text-gray-600 mb-6">{event.short_desc}</p>
                   <a
                     href="#"
                     className="text-primary font-medium hover:underline"
@@ -195,7 +195,7 @@ function Index() {
                   <h3 className="font-semibold mb-4 text-2xl text-primary-dark">
                     {update.title}
                   </h3>
-                  <p className="text-gray-600 mb-6">{update.description}</p>
+                  <p className="text-gray-600 mb-6">{update.short_desc}</p>
                   <a
                     href="#"
                     className="text-primary font-medium hover:underline text-lg"
