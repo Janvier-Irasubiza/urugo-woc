@@ -27,6 +27,7 @@ class BlogStatus(models.TextChoices):
     UPCOMING = 'upcoming', _('Upcoming')
     ARCHIVED = 'archived', _('Archived')
 
+
 # Item Types
 class ItemTypes(models.TextChoices):
     PRODUCT = 'product', _('Product')
@@ -38,6 +39,16 @@ class OrderStatus(models.TextChoices):
     CONFIRMED = 'confirmed', _('Confirmed')
     COMPLETED = 'completed', _('Completed')
     CANCELLED = 'cancelled', _('Cancelled')
+
+class AccommodationTypes(models.TextChoices):
+    FAMILY = 'family', _('Family')
+    SINGLE = 'single', _('Single')
+    COUPLE = 'couple', _('Couple')   
+
+class DiningTypes(models.TextChoices):
+    AFRICAN_DISH = 'african_dish', _('African Dish')
+    KINYARWANDA_DISH = 'kinyarwanda_dish', _('Kinyarwanda Dish')
+    AFRICAN_CULTURE = 'african_tradition', _('African Tradition') 
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -169,6 +180,14 @@ class Listing(models.Model):
     time_frame = models.CharField(max_length=100, blank=True, null=True)
     available = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
+    category = models.CharField(
+        _('category'),
+        max_length=100, 
+        blank=True, 
+        null=True, 
+        choices=AccommodationTypes.choices
+    )  
 
     def __str__(self):
         return self.name
@@ -176,6 +195,29 @@ class Listing(models.Model):
     class Meta:
         verbose_name = _('listing')
         verbose_name_plural = _('listings')
+
+class Dining(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    image = models.ImageField(upload_to='dining/', blank=True, null=True)
+    location = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
+    category = models.CharField(
+        _('category'),
+        max_length=100, 
+        blank=True, 
+        null=True, 
+        choices=DiningTypes.choices,
+        default=DiningTypes.KINYARWANDA_DISH
+    )
+
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        verbose_name = _('dining')
+        verbose_name_plural = _('dinings')
 
 # Donation Model
 class Donation(models.Model):

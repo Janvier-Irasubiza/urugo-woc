@@ -7,8 +7,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from django.contrib.auth import authenticate
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from .models import User, Post, Listing, Donation, Order, OrderItem, Partner
+from .models import Dining, User, Post, Listing, Donation, Order, OrderItem, Partner
 from .serializers import (
+    DiningSerializer,
     UserSerializer, 
     BlogPostSerializer, 
     ItemSerializer, 
@@ -80,6 +81,15 @@ class ItemViewSet(viewsets.ModelViewSet):
     filterset_fields = ['type', 'available']
     search_fields = ['name', 'description']
     ordering_fields = ['price', 'created_at']
+
+class DiningViewSet(viewsets.ModelViewSet):
+    queryset = Dining.objects.all()
+    serializer_class = DiningSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filterset_fields = ['name']
+    search_fields = ['name', 'location']
+    ordering_fields = ['id']
 
 # Donation ViewSet
 class DonationViewSet(viewsets.ModelViewSet):

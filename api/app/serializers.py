@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Post, Listing, Donation, Order, OrderItem, Partner
+from .models import Dining, User, Post, Listing, Donation, Order, OrderItem, Partner
 
 # User Serializer
 class UserSerializer(serializers.ModelSerializer):
@@ -19,7 +19,12 @@ class BlogPostSerializer(serializers.ModelSerializer):
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Listing
-        fields = ['id', 'name', 'description', 'image', 'type', 'price', 'time_frame', 'available', 'created_at']
+        fields = ['id', 'name', 'description', 'image', 'type', 'category', 'price', 'time_frame', 'available', 'created_at']
+
+class DiningSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dining
+        fields = ['id', 'name', 'description', 'image', 'location', 'created_at', 'active', 'category']
 
 # Donation Serializer
 class DonationSerializer(serializers.ModelSerializer):

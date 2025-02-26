@@ -11,6 +11,7 @@ from .views import (
     RegisterView,
     LoginView,
     PartnerViewSet,
+    DiningViewSet,
 )
 
 # Initialize router
@@ -19,7 +20,8 @@ router = DefaultRouter()
 # Register viewsets
 router.register(r'users', UserViewSet)
 router.register(r'blog-posts', BlogPostViewSet)
-router.register(r'items', ItemViewSet)
+router.register(r'listings', ItemViewSet)
+router.register(r'dining', DiningViewSet)
 router.register(r'donations', DonationViewSet)
 router.register(r'orders', OrderViewSet)
 router.register(r'order-items', OrderItemViewSet)
