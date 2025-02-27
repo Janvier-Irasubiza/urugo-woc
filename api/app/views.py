@@ -67,9 +67,10 @@ class BlogPostViewSet(viewsets.ModelViewSet):
     serializer_class = BlogPostSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['type', 'status', 'published_by']
-    search_fields = ['title', 'description']
+    filterset_fields = ['type', 'slug', 'status', 'published_by']
+    search_fields = ['title', 'slug', 'description']
     ordering_fields = ['created_at', 'updated_at']
+    lookup_field = 'slug'
 
     def perform_create(self, serializer):
         serializer.save(published_by=self.request.user)
@@ -80,19 +81,21 @@ class ItemViewSet(viewsets.ModelViewSet):
     serializer_class = ItemSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['type', 'available']
-    search_fields = ['title', 'description']
+    filterset_fields = ['type', 'slug', 'available']
+    search_fields = ['title', 'slug', 'description']
     ordering_fields = ['price', 'created_at']
     pagination_class = PageNumberPagination
+    lookup_field = 'slug'
 
 class DiningViewSet(viewsets.ModelViewSet):
     queryset = Dining.objects.all()
     serializer_class = DiningSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
-    filterset_fields = ['title']
-    search_fields = ['title', 'location']
+    filterset_fields = ['title', 'slug',]
+    search_fields = ['title', 'slug', 'location']
     ordering_fields = ['id']
+    lookup_field = 'slug'
 
 # Donation ViewSet
 class DonationViewSet(viewsets.ModelViewSet):

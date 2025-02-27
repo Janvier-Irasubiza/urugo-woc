@@ -1,75 +1,77 @@
 import { useEffect, useState } from "react";
 import App from "../layouts/app";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import { ShoppingBagIcon } from "@heroicons/react/16/solid";
 
 interface Marketplace {
   image: string;
   title: string;
-  short_desc: string;
   price: number;
   category: string;
+  slug: string;
 }
 
 function Marketplace() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [category, setCategory] = useState("Products");
+  const [category, setCategory] = useState("Product");
   const [products, setProducts] = useState<Marketplace[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [isSearching, setIsSearching] = useState(false);
 
-  const fetchProducts = async (page = 1) => {
-    if (page > totalPages) return;
+  const fetchProducts = async (page = 1, reset = false) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/listings/?type=product&page=${page}`
+        `http://localhost:8000/api/listings/?type=${category.toLowerCase()}&page=${page}&search=${searchQuery}`
       );
-      console.log(response.data);
-  
-      setProducts((prevProducts) => {
-        const newProducts = response.data.results;
-          const uniqueProducts = [...prevProducts, ...newProducts].reduce(
-          (acc, product) => {
-            if (!acc.some((item: Marketplace) => item.title === product.title)) {
-              acc.push(product);
-            }
-            return acc;
-          },
-          [] as Marketplace[]
-        );
-  
-        return uniqueProducts;
-      });
-  
+
+      setProducts((prev) =>
+        reset ? response.data.results : [...prev, ...response.data.results]
+      );
       setTotalPages(response.data.total_pages);
     } catch (error) {
       console.error(error);
     }
   };
-  
 
+  const handleSearch = () => {
+    setCurrentPage(1);
+    fetchProducts(1, true);
+  };
+
+  // Handle initial load and category changes
   useEffect(() => {
+    handleSearch();
+  }, [category]);
+
+  // Handle infinite scroll
+  useEffect(() => {
+    if (currentPage === 1) return;
     fetchProducts(currentPage);
   }, [currentPage]);
 
+  // Add scroll listener for infinite scroll
   useEffect(() => {
     const handleScroll = () => {
       if (
+        !isSearching &&
         window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight - 50
+          document.documentElement.offsetHeight - 100 &&
+        currentPage < totalPages
       ) {
-        setCurrentPage((prevPage) => prevPage + 1);
+        setCurrentPage((prev) => prev + 1);
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [currentPage, totalPages, isSearching]);
 
   return (
     <App>
       <div className="px-20 py-10 space-y-28">
-        {/* Marketplace Section */}
-
+        {/* Search Section */}
         <div className="flex justify-center">
           <div className="flex items-center justify-center space-x-4 border-2 border-orange-400 rounded-full px-4 py-2 w-full md:w-1/2">
             <select
@@ -77,8 +79,7 @@ function Marketplace() {
               onChange={(e) => setCategory(e.target.value)}
               className="text-gray-700 p-4 rounded-full focus:outline-none"
             >
-              <option>Products</option>
-              <option>Services</option>
+              <option>Product</option>
               <option>Accommodation</option>
             </select>
             <input
@@ -86,35 +87,54 @@ function Marketplace() {
               placeholder={`Search in ${category}`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
               className="flex-grow px-4 py-2 rounded-full border-none focus:outline-none"
             />
-            <button className="px-4 py-2 btn-primary rounded-full text-white hover:bg-orange-600 transition">
+            <button
+              onClick={handleSearch}
+              className="px-4 py-2 btn-primary rounded-full text-white hover:bg-orange-600 transition"
+            >
               Search
             </button>
           </div>
         </div>
 
-        <section className="">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-lg">
-            {products.map((event, index) => (
-              <div
-                key={index}
-                className="bg-thrd-level rounded-lg overflow-hidden shadow-lg"
-              >
-                <img
-                  src={event.image}
-                  alt={event.title}
-                  className="w-full h-80 object-cover"
-                />
-                <div className="p-6">
-                  <h3 className="font-semibold mb-2 text-2xl text-primary-dark">
-                    {event.title}
-                  </h3>
-                  <p className="text-gray-600 mb-6">{event.short_desc}</p>
+        {/* Products Grid */}
+        <section>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-lg">
+            {products.map((product) => (
+              <Link to={`/itm/${product.slug}`} key={product.slug}>
+                <div className="bg-thrd-level rounded-lg overflow-hidden shadow-lg">
+                  <img
+                    src={product.image}
+                    alt={product.title}
+                    className="w-full h-52 object-cover"
+                  />
+                  <div className="p-4">
+                    <h3 className="font-semibold text-primary-dark">
+                      {product.title}
+                    </h3>
+                    <p className="font-medium mb-2 text-gray-700">
+                      ${product.price}
+                    </p>
+                    <div className="flex items-center space-x-4 justify-between">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          // Handle add to cart logic here
+                        }}
+                        className="btn-primary text-sm rounded-full text-white hover:bg-orange-600 transition px-6 py-2 font-medium flex items-center"
+                      >
+                        <ShoppingBagIcon className="h-5 w-5 mr-2" />
+                        Add to Cart
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
+          {isSearching && <div className="text-center py-4">Loading...</div>}
         </section>
       </div>
     </App>

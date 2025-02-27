@@ -1,36 +1,62 @@
 import Modal from "../components/modal";
 import App from "../layouts/app";
-import { BriefcaseIcon } from "@heroicons/react/16/solid";
+import { ArrowRightIcon } from "@heroicons/react/16/solid";
 import Donation from "../partials/Donation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import poster from "../../public/images/sxpra.jpg";
 
 interface Post {
   title: string;
+  slug: string;
   short_desc: string;
   image: string;
   type: string;
 }
-[];
 
 interface partners {
   logo: string;
   url: string;
 }
-[];
 
 function Index() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [partners, setPartners] = useState<partners[]>([]);
 
-  const fetchPosts = async () => {
+  // Events states
+  const [events, setEvents] = useState<Post[]>([]);
+  const [eventsPage, setEventsPage] = useState(1);
+  const [eventsTotalPages, setEventsTotalPages] = useState(1);
+
+  // News states
+  const [newsUpdates, setNewsUpdates] = useState<Post[]>([]);
+  const [newsPage, setNewsPage] = useState(1);
+  const [newsTotalPages, setNewsTotalPages] = useState(1);
+
+  // Partners states
+  const [partners, setPartners] = useState<partners[]>([]);
+  const [partnersPage, setPartnersPage] = useState(1);
+  const [partnersTotalPages, setPartnersTotalPages] = useState(1);
+
+  const fetchEvents = async () => {
     try {
-      // Fetch data from API using axios
-      const response = await axios.get("http://localhost:8000/api/blog-posts/");
-      console.log(response.data);
-      setPosts(response.data);
+      const response = await axios.get(
+        `http://localhost:8000/api/blog-posts/?type=event&page=${eventsPage}`
+      );
+      setEvents(response.data.results);
+      setEventsTotalPages(response.data.total_pages);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchNewsUpdates = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/blog-posts/?type=blog&page=${newsPage}`
+      );
+      setNewsUpdates(response.data.results);
+      setNewsTotalPages(response.data.total_pages);
     } catch (error) {
       console.error(error);
     }
@@ -38,26 +64,32 @@ function Index() {
 
   const fetchPartners = async () => {
     try {
-      // Fetch data from API using axios
-      const response = await axios.get("http://localhost:8000/api/partners/");
-      console.log(response.data);
-      setPartners(response.data);
+      const response = await axios.get(
+        `http://localhost:8000/api/partners/?page=${partnersPage}`
+      );
+      setPartners(response.data.results);
+      setPartnersTotalPages(response.data.total_pages);
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    fetchPosts();
-    fetchPartners();
-  }, []);
+    fetchEvents();
+  }, [eventsPage]);
 
-  const events = posts.filter((post) => post.type === "event");
-  const newsUpdates = posts.filter((post) => post.type === "blog");
+  useEffect(() => {
+    fetchNewsUpdates();
+  }, [newsPage]);
+
+  useEffect(() => {
+    fetchPartners();
+  }, [partnersPage]);
 
   const openModal = () => {
     setIsModalOpen(true);
   };
+
   const infoCards = [
     {
       title: "Urugo Women Opportunity Center",
@@ -79,8 +111,29 @@ function Index() {
   return (
     <App>
       <div className="px-20 py-6">
-        <div className="border w-full h-[474px] rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center">
-          <img src="p" alt="" />
+        <div className="w-full h-[474px] rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center">
+          <div className="relative w-full h-full">
+            <img src={poster} alt="Hands Together" />
+            <div className="absolute inset-0 w-1/2 flex items-center justify-center">
+              <div className="p-12">
+                <h3 className="text-white text-4xl font-bold">
+                  Support women’s <br />
+                  Survivors of war
+                </h3>
+                <p className="text-white mt-4 text-2xl">
+                  In countries affected by conflict and war, we help the most
+                  marginized women to overcome adversity and rebuild their
+                  lives. Join our mission to make a difference.
+                </p>
+                <button
+                  onClick={openModal}
+                  className="btn-primary mt-8 text-white px-12 py-3 rounded-full hover:bg-orange-600"
+                >
+                  Donate
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* infoCards Section */}
@@ -90,11 +143,6 @@ function Index() {
               key={index}
               className="bg-thrd-level p-6 rounded-lg shadow-lg text-center"
             >
-              {/* Icon */}
-              <div className="flex justify-center mb-4">
-                <BriefcaseIcon className="h-12 w-12 text-gray-400" />
-              </div>
-
               {/* Title */}
               <h3 className="font-semibold text-green-700 mb-2 text-4xl">
                 {card.title}
@@ -145,85 +193,127 @@ function Index() {
         </section>
 
         {/* Events Section */}
-        <section className="mt-20">
-          <h2 className="text-4xl font-bold text-primary mb-6">Events</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-lg">
-            {events.map((event, index) => (
-              <div
-                key={index}
-                className="bg-thrd-level rounded-lg overflow-hidden shadow-lg"
-              >
-                <img
-                  src={event.image}
-                  alt={event.title}
-                  className="w-full h-80 object-cover"
-                />
-                <div className="p-6">
-                  <h3 className="font-semibold mb-4 text-2xl text-primary-dark">
-                    {event.title}
-                  </h3>
-                  <p className="text-gray-600 mb-6">{event.short_desc}</p>
-                  <a
-                    href="#"
-                    className="text-primary font-medium hover:underline"
-                  >
-                    Read More
-                  </a>
-                </div>
+        {events && events.length > 0 && (
+          <section className="mt-20">
+            <div className="flex justify-between items-center">
+              <h2 className="text-4xl font-bold text-primary mb-6">Events</h2>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setEventsPage((prev) => prev - 1)}
+                  disabled={eventsPage === 1}
+                  className="btn-primary text-white px-4 py-2 rounded-full hover:bg-orange-600"
+                >
+                  <ArrowRightIcon className="h-5 w-5 transform rotate-180" />
+                </button>
+                <button
+                  onClick={() => setEventsPage((prev) => prev + 1)}
+                  disabled={eventsPage === eventsTotalPages}
+                  className="btn-primary text-white px-4 py-2 rounded-full hover:bg-orange-600"
+                >
+                  <ArrowRightIcon className="h-5 w-5" />
+                </button>
               </div>
-            ))}
-          </div>
-        </section>
-
-        {/* News & Updates Section */}
-        <section className="mt-20">
-          <h2 className="text-4xl font-bold text-primary mb-6">
-            News & Updates
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-lg">
-            {newsUpdates.map((update, index) => (
-              <div
-                key={index}
-                className="bg-thrd-level rounded-lg overflow-hidden shadow-lg"
-              >
-                <img
-                  src={update.image}
-                  alt={update.title}
-                  className="w-full h-80 object-cover"
-                />
-                <div className="p-6">
-                  <h3 className="font-semibold mb-4 text-2xl text-primary-dark">
-                    {update.title}
-                  </h3>
-                  <p className="text-gray-600 mb-6">{update.short_desc}</p>
-                  <a
-                    href="#"
-                    className="text-primary font-medium hover:underline text-lg"
-                  >
-                    Read More
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Partners Section */}
-        <section className="mt-20">
-          <h2 className="text-4xl font-bold text-primary mb-6">Partners</h2>
-          <div className="flex items-center justify-between gap-6">
-            {partners.map((partner, index) => (
-              <Link to={partner.url} target="_blank">
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-lg">
+              {events.map((event, index) => (
                 <div
                   key={index}
-                  className="bg-gray-100 h-16 w-32 flex items-center justify-center rounded-lg"
+                  className="bg-thrd-level rounded-lg overflow-hidden shadow-lg"
                 >
-                  <img src={partner.logo} alt="" />
+                  <img
+                    src={event.image}
+                    alt={event.title}
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="p-6">
+                    <h3 className="font-semibold mb-4 text-2xl text-primary-dark">
+                      {event.title}
+                    </h3>
+                    <p className="text-gray-600 mb-6">{event.short_desc}</p>
+                    <Link
+                      to={`/atl/${event.slug}`}
+                      className="text-primary font-medium hover:underline"
+                    >
+                      Read More
+                    </Link>
+                  </div>
                 </div>
-              </Link>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* News & Updates Section */}
+        {newsUpdates && newsUpdates.length > 0 && (
+          <section className="mt-20">
+            <div className="flex justify-between items-center">
+              <h2 className="text-4xl font-bold text-primary mb-6">
+                News & Updates
+              </h2>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setNewsPage((prev) => prev - 1)}
+                  disabled={newsPage === 1}
+                  className="btn-primary text-white px-4 py-2 rounded-full hover:bg-orange-600"
+                >
+                  <ArrowRightIcon className="h-5 w-5 transform rotate-180" />
+                </button>
+                <button
+                  onClick={() => setNewsPage((prev) => prev + 1)}
+                  disabled={newsPage === newsTotalPages}
+                  className="btn-primary text-white px-4 py-2 rounded-full hover:bg-orange-600"
+                >
+                  <ArrowRightIcon className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-lg">
+              {newsUpdates.map((update, index) => (
+                <div
+                  key={index}
+                  className="bg-thrd-level rounded-lg overflow-hidden shadow-lg"
+                >
+                  <img
+                    src={update.image}
+                    alt={update.title}
+                    className="w-full h-64 object-cover"
+                  />
+                  <div className="p-6">
+                    <h3 className="font-semibold mb-4 text-2xl text-primary-dark">
+                      {update.title}
+                    </h3>
+                    <p className="text-gray-600 mb-6">{update.short_desc}</p>
+                    <Link
+                      to={`/atl/${update.slug}`}
+                      className="text-primary font-medium hover:underline"
+                    >
+                      Read More
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Partners Section */}
+        {partners && partners.length > 0 && (
+          <section className="mt-20 mb-10">
+            <h2 className="text-4xl font-bold text-primary mb-6">Partners</h2>
+            <div className="flex items-center justify-between gap-6">
+              {partners.map((partner, index) => (
+                <Link to={partner.url} target="_blank">
+                  <div
+                    key={index}
+                    className="bg-gray-100 h-16 w-32 flex items-center justify-center rounded-lg"
+                  >
+                    <img src={partner.logo} alt="" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <Donation />

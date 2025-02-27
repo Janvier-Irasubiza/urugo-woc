@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager, Group, Per
 from django.utils.translation import gettext_lazy as _
 from django.core.validators import RegexValidator
 from django.db import models
+from django.utils.text import slugify
 
 # Validators
 phone_regex = RegexValidator(
@@ -158,9 +159,15 @@ class Post(models.Model):
         choices=BlogStatus.choices,
         default=BlogStatus.PUBLISHED
     )
+    slug = models.SlugField(max_length=100, unique=True, blank=True, null=True)
 
     def __str__(self):
         return self.title
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = _('post')
@@ -190,9 +197,15 @@ class Listing(models.Model):
         null=True, 
         choices=AccommodationTypes.choices
     )  
+    slug = models.SlugField(max_length=100, unique=True, blank=True, null=True)
 
     def __str__(self):
         return self.title
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = _('listing')
@@ -214,9 +227,15 @@ class Dining(models.Model):
         choices=DiningTypes.choices,
         default=DiningTypes.KINYARWANDA_DISH
     )
+    slug = models.SlugField(max_length=100, unique=True, blank=True, null=True)
 
     def __str__(self):
         return self.title
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
     
     class Meta:
         verbose_name = _('dining')

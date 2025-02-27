@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import App from "../layouts/app";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 interface Dining {
   image: string;
@@ -8,25 +9,45 @@ interface Dining {
   short_desc: string;
   category: string;
   location: string;
+  slug: string;
 }
 
 function Dining() {
   const [Dining, setDining] = useState<Dining[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const fetchDinings = async () => {
+  const fetchDinings = async (page = 1) => {
+    if (page > totalPages) return;
     try {
       // Fetch data from API using axios
-      const response = await axios.get("http://localhost:8000/api/dining/");
-      console.log(response.data);
-      setDining(response.data);
+      const response = await axios.get(
+        `http://localhost:8000/api/dining/?page=${page}`
+      );
+      setDining((prevDinings) => {
+        const newDinings = response.data.results;
+        const uniqueDinings = [...prevDinings, ...newDinings].reduce(
+          (acc, dining) => {
+            if (!acc.some((item: Dining) => item.title === dining.title)) {
+              acc.push(dining);
+            }
+            return acc;
+          },
+          [] as Dining[]
+        );
+
+        return uniqueDinings;
+      });
+
+      setTotalPages(response.data.total_pages);
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    fetchDinings();
-  }, []);
+    fetchDinings(currentPage);
+  }, [currentPage]);
 
   const AfricanDish = Dining.filter(
     (dining) => dining.category === "african_dish"
@@ -37,6 +58,21 @@ function Dining() {
   const AfricanTradition = Dining.filter(
     (dining) => dining.category === "african_tradition"
   );
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 50
+      ) {
+        setCurrentPage((prevPage) => prevPage + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <App>
@@ -57,19 +93,19 @@ function Dining() {
                   <img
                     src={dining.image}
                     alt={dining.title}
-                    className="w-full h-80 object-cover"
+                    className="w-full h-64 object-cover"
                   />
                   <div className="p-6">
                     <h3 className="font-semibold mb-2 text-2xl text-primary-dark">
                       {dining.title}
                     </h3>
                     <p className="text-gray-600 mb-6">{dining.short_desc}</p>
-                    <a
-                      href="#"
+                    <Link
+                      to={`/dng/${dining.slug}`}
                       className="text-primary font-medium hover:underline"
                     >
                       Read More
-                    </a>
+                    </Link>
                   </div>
                 </div>
               ))}
@@ -92,7 +128,7 @@ function Dining() {
                   <img
                     src={dining.image}
                     alt={dining.title}
-                    className="w-full h-80 object-cover"
+                    className="w-full h-64 object-cover"
                   />
                   <div className="p-6">
                     <h3 className="font-semibold mb-2 text-2xl text-primary-dark">
@@ -126,7 +162,7 @@ function Dining() {
                   <img
                     src={dining.image}
                     alt={dining.title}
-                    className="w-full h-80 object-cover"
+                    className="w-full h-64 object-cover"
                   />
                   <div className="p-6">
                     <h3 className="font-semibold mb-2 text-2xl text-primary-dark">

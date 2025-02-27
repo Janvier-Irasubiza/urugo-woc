@@ -1,35 +1,41 @@
 import { ShoppingCartIcon, StarIcon, TagIcon } from "@heroicons/react/24/solid";
 import App from "../layouts/app";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-const productDetails = {
-  id: 1,
-  name: "Handwoven Basket",
-  images: [
-    "https://source.unsplash.com/600x400/?basket",
-    "https://source.unsplash.com/600x400/?craft",
-    "https://source.unsplash.com/600x400/?artisan",
-  ],
-  category: "Traditional Crafts",
-  description:
-    "A beautifully handwoven basket made by local artisans in Rwanda. Perfect for home decor or functional use.",
-  price: 45,
-  availableStock: 12,
-  rating: 4.6,
-  reviews: [
-    {
-      user: "Alice Johnson",
-      comment: "Exquisite craftsmanship, highly recommended!",
-      rating: 5,
-    },
-    {
-      user: "Mark Lee",
-      comment: "Looks great in my living room.",
-      rating: 4,
-    },
-  ],
-};
+interface Product {
+  title: string;
+  image: string;
+  description: string;
+  category: string;
+  price: number;
+  available_stock: number;
+  rating: number;
+  type: string;
+  time_frame?: string;
+}
 
 function ProductInfo() {
+  const { slug } = useParams();
+  const [productDetails, setProductDetails] = useState<Product>({} as Product);
+
+  const fetchProductDetails = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/listings/${slug}/`
+      );
+      console.log(response.data);
+      setProductDetails(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProductDetails();
+  }, [slug]);
+
   return (
     <>
       <App>
@@ -37,22 +43,23 @@ function ProductInfo() {
           {/* Product Title & Image Gallery */}
 
           <div className="text-sm text-gray-500">
-            Home / Marketplace / {productDetails.name}
+            Home /{" "}
+            {productDetails.type === "product"
+              ? "Marketplace"
+              : "Accommodations"}
+            / {productDetails.title}
           </div>
 
-          <div className="space-y-4">
+          <div className="">
             <h1 className="text-4xl font-bold text-gray-800">
-              {productDetails.name}
+              {productDetails.title}
             </h1>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {productDetails.images.map((image, index) => (
-                <img
-                  key={index}
-                  src={image}
-                  alt={`Product image ${index + 1}`}
-                  className="rounded-xl object-cover w-full h-64 shadow-lg hover:scale-105 transition-transform"
-                />
-              ))}
+              {/* image */}
+              <img
+                src={productDetails.image}
+                className="rounded-xl object-cover w-full h-64 shadow-lg hover:scale-105 transition-transform"
+              />
             </div>
           </div>
 
@@ -75,47 +82,89 @@ function ProductInfo() {
 
               <div className="text-sm text-gray-400">
                 <span>
-                  {productDetails.availableStock > 0
-                    ? `${productDetails.availableStock} in stock`
+                  {productDetails.available_stock > 0
+                    ? `${productDetails.available_stock} in stock`
                     : "Out of stock"}
                 </span>
               </div>
             </div>
 
             {/* Right Section - Purchase Form */}
-            <div className="w-full md:w-1/3 bg-white p-6 rounded-2xl shadow-lg space-y-6">
-              <h2 className="text-xl font-semibold text-gray-700">
-                Purchase This Product
-              </h2>
-              <p className="text-3xl font-bold text-secondary">
-                ${productDetails.price}
-              </p>
+            {productDetails.type === "product" ? (
+              <div className="w-full md:w-1/3 bg-white p-6 rounded-2xl shadow-lg space-y-6">
+                <h2 className="text-xl font-semibold text-gray-700">
+                  Purchase This Product
+                </h2>
+                <p className="text-3xl font-bold text-secondary">
+                  ${productDetails.price}
+                </p>
 
-              {/* Purchase Form */}
-              <form className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-600">
-                    Quantity
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max={productDetails.availableStock}
-                    className="w-full p-3 border rounded-lg focus:ring focus:ring-indigo-300"
-                    disabled={productDetails.availableStock === 0}
-                  />
-                </div>
+                {/* Purchase Form */}
+                <form className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600">
+                      Quantity
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      max={productDetails.available_stock}
+                      className="w-full p-3 border rounded-lg focus:ring focus:ring-indigo-300"
+                      disabled={productDetails.available_stock === 0}
+                    />
+                  </div>
 
-                <button
-                  type="submit"
-                  className="w-full py-3 rounded-lg btn-primary text-white transition"
-                  disabled={productDetails.availableStock === 0}
-                >
-                  <ShoppingCartIcon className="h-5 w-5 inline-block mr-2" />
-                  Add to Cart
-                </button>
-              </form>
-            </div>
+                  <button
+                    type="submit"
+                    className="w-full py-3 rounded-lg btn-primary text-white transition"
+                    disabled={productDetails.available_stock === 0}
+                  >
+                    <ShoppingCartIcon className="h-5 w-5 inline-block mr-2" />
+                    Add to Cart
+                  </button>
+                </form>
+              </div>
+            ) : (
+              <div className="w-full md:w-1/3 bg-white p-6 rounded-2xl shadow-lg space-y-6">
+                <h2 className="text-xl font-semibold text-gray-700">
+                  Book This Accommodation
+                </h2>
+                <p className="text-3xl font-bold text-secondary">
+                  {productDetails.price} Rwf
+                  <span className="text-sm font-normal text-gray-500">
+                    /{productDetails.time_frame}
+                  </span>
+                </p>
+                <form className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600">
+                      Check-in Date
+                    </label>
+                    <input
+                      type="date"
+                      className="w-full p-3 border rounded-lg focus:ring focus:ring-indigo-300"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600">
+                      Check-out Date
+                    </label>
+                    <input
+                      type="date"
+                      className="w-full p-3 border rounded-lg focus:ring focus:ring-indigo-300"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-3 rounded-lg btn-primary text-white transition"
+                  >
+                    Book Now
+                  </button>
+                </form>
+              </div>
+            )}
           </div>
         </div>
       </App>

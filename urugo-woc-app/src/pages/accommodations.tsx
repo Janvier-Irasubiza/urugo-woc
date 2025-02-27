@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import App from "../layouts/app";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 interface Accommodation {
   image: string;
@@ -12,24 +13,48 @@ interface Accommodation {
   time_frame: string;
   price: number;
   category: string;
+  slug: string;
 }
 
 function Accommodations() {
   const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
-  const fetchAccommodations = async () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchAccommodations = async (page = 1) => {
+    if (page > totalPages) return;
     try {
       // Fetch data from API using axios
       const response = await axios.get(
-        "http://localhost:8000/api/listings/?type=accommodation"
+        `http://localhost:8000/api/listings/?type=accommodation&page=${page}`
       );
-      setAccommodations(response.data);
+      setAccommodations((prevAccommodations) => {
+        const newAccommodations = response.data.results;
+        const uniqueAccommodations = [
+          ...prevAccommodations,
+          ...newAccommodations,
+        ].reduce((acc, accommodation) => {
+          if (
+            !acc.some(
+              (item: Accommodation) => item.title === accommodation.title
+            )
+          ) {
+            acc.push(accommodation);
+          }
+          return acc;
+        }, [] as Accommodation[]);
+
+        return uniqueAccommodations;
+      });
+
+      setTotalPages(response.data.total_pages);
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    fetchAccommodations();
+    fetchAccommodations(currentPage);
   }, []);
 
   const familyRooms = accommodations.filter(
@@ -41,6 +66,20 @@ function Accommodations() {
   const singleRooms = accommodations.filter(
     (accommodation) => accommodation.category === "single"
   );
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 50
+      ) {
+        setCurrentPage((prevPage) => prevPage + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <App>
@@ -60,19 +99,19 @@ function Accommodations() {
                   <img
                     src={accom.image}
                     alt={accom.title}
-                    className="w-full h-80 object-cover"
+                    className="w-full h-64 object-cover"
                   />
                   <div className="p-6">
                     <h3 className="font-semibold mb-2 text-2xl text-primary-dark">
                       {accom.title}
                     </h3>
                     <p className="text-gray-600 mb-6">{accom.short_desc}</p>
-                    <a
-                      href="#"
+                    <Link
+                      to={`/itm/${accom.slug}`}
                       className="text-primary font-medium hover:underline"
                     >
                       Read More
-                    </a>
+                    </Link>
                   </div>
                 </div>
               ))}
@@ -92,19 +131,19 @@ function Accommodations() {
                   <img
                     src={accom.image}
                     alt={accom.title}
-                    className="w-full h-80 object-cover"
+                    className="w-full h-64 object-cover"
                   />
                   <div className="p-6">
                     <h3 className="font-semibold mb-2 text-2xl text-primary-dark">
                       {accom.title}
                     </h3>
                     <p className="text-gray-600 mb-6">{accom.short_desc}</p>
-                    <a
-                      href="#"
+                    <Link
+                      to={`/itm/${accom.slug}`}
                       className="text-primary font-medium hover:underline"
                     >
                       Read More
-                    </a>
+                    </Link>
                   </div>
                 </div>
               ))}
@@ -124,19 +163,19 @@ function Accommodations() {
                   <img
                     src={accom.image}
                     alt={accom.title}
-                    className="w-full h-80 object-cover"
+                    className="w-full h-64 object-cover"
                   />
                   <div className="p-6">
                     <h3 className="font-semibold mb-2 text-2xl text-primary-dark">
                       {accom.title}
                     </h3>
                     <p className="text-gray-600 mb-6">{accom.short_desc}</p>
-                    <a
-                      href="#"
+                    <Link
+                      to={`/itm/${accom.slug}`}
                       className="text-primary font-medium hover:underline"
                     >
                       Read More
-                    </a>
+                    </Link>
                   </div>
                 </div>
               ))}

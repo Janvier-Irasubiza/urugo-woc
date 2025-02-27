@@ -13,23 +13,23 @@ class BlogPostSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Post
-        fields = ['id', 'title', 'short_desc', 'description', 'image', 'type', 'published', 'published_by', 'created_at', 'updated_at', 'status']
+        fields = ['id', 'title', 'slug', 'short_desc', 'description', 'image', 'type', 'published', 'published_by', 'created_at', 'updated_at', 'status']
 
 # Item Serializer
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Listing
-        fields = ['id', 'title', 'short_desc', 'description', 'image', 'type', 'category', 'price', 'time_frame', 'available', 'created_at']
+        fields = ['id', 'title', 'slug', 'short_desc', 'description', 'image', 'type', 'category', 'price', 'time_frame', 'available', 'created_at']
 
 class DiningSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dining
-        fields = ['id', 'title', 'short_desc', 'description', 'image', 'location', 'created_at', 'active', 'category']
+        fields = ['id', 'title', 'slug', 'short_desc', 'description', 'image', 'location', 'created_at', 'active', 'category']
 
 class DiningBookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = DiningBooking
-        fields = ['id', 'dining', 'user', 'date', 'booking_time', 'guests', 'created_at']
+        fields = ['id', 'dining', 'user', 'booking_time', 'guests', 'created_at']
 
 # Donation Serializer
 class DonationSerializer(serializers.ModelSerializer):
