@@ -1,11 +1,13 @@
 import Modal from "../components/modal";
 import App from "../layouts/app";
 import { ArrowRightIcon } from "@heroicons/react/16/solid";
-import Donation from "../partials/Donation";
+import Donation from "../partials/donation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import poster from "../../public/images/sxpra.jpg";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 interface Post {
   title: string;
@@ -110,24 +112,24 @@ function Index() {
 
   return (
     <App>
-      <div className="px-20 py-6">
-        <div className="w-full h-[474px] rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center">
+      <div className="px-4 md:px-20 py-6">
+        <div className="w-full md:h-[474px] rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center">
           <div className="relative w-full h-full">
             <img src={poster} alt="Hands Together" />
-            <div className="absolute inset-0 w-1/2 flex items-center justify-center">
-              <div className="p-12">
-                <h3 className="text-white text-4xl font-bold">
+            <div className="absolute inset-0 md:w-1/2 flex items-center justify-start">
+              <div className="p-4 md:p-12">
+                <h3 className="text-white text-lg md:text-4xl font-bold">
                   Support women’s <br />
                   Survivors of war
                 </h3>
-                <p className="text-white mt-4 text-2xl">
+                <p className="hidden md:block text-white md:mt-4 md:text-xl">
                   In countries affected by conflict and war, we help the most
                   marginized women to overcome adversity and rebuild their
                   lives. Join our mission to make a difference.
                 </p>
                 <button
                   onClick={openModal}
-                  className="btn-primary mt-8 text-white px-12 py-3 rounded-full hover:bg-orange-600"
+                  className="btn-primary mt-2 md:mt-8 text-sm md:text-base text-white px-6 py-1 md:px-12 md:py-3 rounded-full hover:bg-orange-600"
                 >
                   Donate
                 </button>
@@ -144,7 +146,7 @@ function Index() {
               className="bg-thrd-level p-6 rounded-lg shadow-lg text-center"
             >
               {/* Title */}
-              <h3 className="font-semibold text-green-700 mb-2 text-4xl">
+              <h3 className="font-semibold text-green-700 mb-2 text-3xl md:text-4xl">
                 {card.title}
               </h3>
 
@@ -171,7 +173,7 @@ function Index() {
 
           {/* Text Content */}
           <div className="space-y-8 w-full">
-            <h2 className="text-4xl font-bold text-green-700">
+            <h2 className="text-3xl md:text-4xl font-bold text-green-700">
               Supporting Women’s Economic Development
             </h2>
             <p className="text-gray-600 text-lg">
@@ -196,25 +198,27 @@ function Index() {
         {events && events.length > 0 && (
           <section className="mt-20">
             <div className="flex justify-between items-center">
-              <h2 className="text-4xl font-bold text-primary mb-6">Events</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-primary">
+                Events
+              </h2>
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setEventsPage((prev) => prev - 1)}
                   disabled={eventsPage === 1}
-                  className="btn-primary text-white px-4 py-2 rounded-full hover:bg-orange-600"
+                  className="text-primary-dark"
                 >
-                  <ArrowRightIcon className="h-5 w-5 transform rotate-180" />
+                  <FontAwesomeIcon icon={faAngleLeft} />
                 </button>
                 <button
                   onClick={() => setEventsPage((prev) => prev + 1)}
                   disabled={eventsPage === eventsTotalPages}
-                  className="btn-primary text-white px-4 py-2 rounded-full hover:bg-orange-600"
+                  className="text-primary-dark"
                 >
-                  <ArrowRightIcon className="h-5 w-5" />
+                  <FontAwesomeIcon icon={faAngleRight} />
                 </button>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-lg">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-lg mt-4 md:mt-6">
               {events.map((event, index) => (
                 <div
                   key={index}
@@ -247,27 +251,27 @@ function Index() {
         {newsUpdates && newsUpdates.length > 0 && (
           <section className="mt-20">
             <div className="flex justify-between items-center">
-              <h2 className="text-4xl font-bold text-primary mb-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-primary">
                 News & Updates
               </h2>
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setNewsPage((prev) => prev - 1)}
                   disabled={newsPage === 1}
-                  className="btn-primary text-white px-4 py-2 rounded-full hover:bg-orange-600"
+                  className="text-primary-dark"
                 >
-                  <ArrowRightIcon className="h-5 w-5 transform rotate-180" />
+                  <FontAwesomeIcon icon={faAngleLeft} />
                 </button>
                 <button
                   onClick={() => setNewsPage((prev) => prev + 1)}
                   disabled={newsPage === newsTotalPages}
-                  className="btn-primary text-white px-4 py-2 rounded-full hover:bg-orange-600"
+                  className="text-primary-dark"
                 >
-                  <ArrowRightIcon className="h-5 w-5" />
+                  <FontAwesomeIcon icon={faAngleRight} />
                 </button>
               </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-lg">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-lg mt-6">
               {newsUpdates.map((update, index) => (
                 <div
                   key={index}
@@ -299,7 +303,9 @@ function Index() {
         {/* Partners Section */}
         {partners && partners.length > 0 && (
           <section className="mt-20 mb-10">
-            <h2 className="text-4xl font-bold text-primary mb-6">Partners</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-6">
+              Partners
+            </h2>
             <div className="flex items-center justify-between gap-6">
               {partners.map((partner, index) => (
                 <Link to={partner.url} target="_blank">

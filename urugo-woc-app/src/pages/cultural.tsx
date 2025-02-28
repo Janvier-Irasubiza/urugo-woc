@@ -20,7 +20,7 @@ const Cultural = () => {
 
   return (
     <App>
-      <div className="px-20 py-10 bg-[#F7F9FB] space-y-10">
+      <div className="px-4 md:px-20 md:py-10 space-y-10 bg-[#F7F9FB]">
         {/* Heading Section */}
         <h1 className="text-4xl font-extrabold text-[#1B4965]">African Dish</h1>
 

@@ -4,7 +4,7 @@ function Auth() {
   return (
     <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0">
       {/* Left Section - Image */}
-      <div className="md:w-1/2 rounded-l-2xl overflow-hidden">
+      <div className="hidden md:block md:w-1/2 rounded-l-2xl overflow-hidden">
         <img
           src="https://source.unsplash.com/600x600/?community,helping"
           alt="Join Community"

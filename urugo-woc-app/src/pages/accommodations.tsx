@@ -83,7 +83,7 @@ function Accommodations() {
 
   return (
     <App>
-      <div className="px-20 py-10 space-y-28">
+      <div className="px-4 md:px-20 md:py-10 space-y-10">
         {/* Accommodations Section */}
         {familyRooms && familyRooms.length > 0 && (
           <section className="">

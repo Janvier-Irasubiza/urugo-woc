@@ -15,7 +15,7 @@ function About() {
 
   return (
     <App>
-      <div className="px-20 py-20 space-y-28 bg-gradient-to-b from-white to-gray-50">
+      <div className="px-2 md:px-20 py-20 space-y-28 bg-gradient-to-b from-white to-gray-50">
         {/* About Section */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="p-8 rounded-2xl bg-gradient-to-r from-orange-100 to-orange-50 border-l-4 border-orange-500 shadow-md">

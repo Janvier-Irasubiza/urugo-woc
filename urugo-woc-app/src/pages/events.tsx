@@ -70,7 +70,7 @@ function Events() {
 
   return (
     <App>
-      <div className="px-20 py-10 space-y-28">
+      <div className="px-4 md:px-20 py-4 md:py-10 space-y-10">
         {happeningNow && happeningNow.length > 0 && (
           <section>
             <h1 className="mb-4 text-3xl font-bold text-primary">
@@ -80,7 +80,7 @@ function Events() {
               <Link to={`/events/${event.slug}`}>
                 <div
                   key={index}
-                  className="border w-full h-[352px] rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center"
+                  className="border w-full md:h-[352px] rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center"
                 >
                   <img src={event.image} alt="" />
                 </div>
@@ -91,7 +91,7 @@ function Events() {
 
         {/* Events Section */}
         {upcomingEvents && upcomingEvents.length > 0 && (
-          <section className="mt-20">
+          <section className="">
             <h2 className="text-3xl font-bold text-primary mb-6">Upcoming</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-lg">
               {upcomingEvents.map((event, index) => (

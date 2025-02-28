@@ -15,7 +15,7 @@ import { FaXTwitter } from "react-icons/fa6";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-gray-200 pt-10 px-20">
+    <footer className="bg-gray-800 text-gray-200 pt-10 px-4 md:px-20">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         {/* Menu Links - Column 1 */}
         <div>

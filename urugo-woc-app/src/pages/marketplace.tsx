@@ -70,14 +70,14 @@ function Marketplace() {
 
   return (
     <App>
-      <div className="px-20 py-10 space-y-28">
+      <div className="px-4 md:px-20 md:py-10 space-y-10">
         {/* Search Section */}
         <div className="flex justify-center">
           <div className="flex items-center justify-center space-x-4 border-2 border-orange-400 rounded-full px-4 py-2 w-full md:w-1/2">
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="text-gray-700 p-4 rounded-full focus:outline-none"
+              className="text-gray-700 p-4 rounded-full focus:outline-none hidden md:block"
             >
               <option>Product</option>
               <option>Accommodation</option>
