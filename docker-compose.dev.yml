@@ -1,27 +1,26 @@
-version: '3.8'
-
 services:
   frontend:
     build:
       context: ./urugo-woc-app
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile.dev
     ports:
-      - "80:80"
+      - "5173:5173"
     volumes:
       - ./urugo-woc-app:/app
-    environment:
-      - NODE_ENV=production
+      - /app/node_modules
+    container_name: ftd-dev
     restart: unless-stopped
+    command: npm run dev -- --host 0.0.0.0
 
   api:
     build:
       context: ./api
-      dockerfile: Dockerfile.prod
+      dockerfile: Dockerfile.dev
     ports:
       - "8000:8000"
     volumes:
       - ./api:/app
-    environment:
-      - DEBUG=0
-      - DJANGO_SETTINGS_MODULE=api_settings.production
+    container_name: api-dev
     restart: unless-stopped
+    environment:
+      - DEBUG=1
