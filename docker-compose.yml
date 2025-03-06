@@ -12,6 +12,8 @@ services:
     environment:
       - NODE_ENV=production
     restart: unless-stopped
+    networks:
+      - app-network
 
   api:
     build:
@@ -25,3 +27,9 @@ services:
       - DEBUG=0
       - DJANGO_SETTINGS_MODULE=api.settings
     restart: unless-stopped
+    networks:
+      - app-network 
+
+networks:
+  app-network:
+    driver: bridge
