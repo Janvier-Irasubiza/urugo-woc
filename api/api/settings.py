@@ -28,7 +28,7 @@ DEBUG = False
 ALLOWED_HOSTS = ["urugowoc.healthylifeinitiative.com", "localhost",]
 CORS_ALLOWED_ORIGINS = [
     "https://urugowoc.healthylifeinitiative.com",
-    "http://localhost:5173"
+    "http://localhost:8080"
 ]
 
 # Application definition
