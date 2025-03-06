@@ -1,6 +1,5 @@
 import Modal from "../components/modal";
 import App from "../layouts/app";
-import { ArrowRightIcon } from "@heroicons/react/16/solid";
 import Donation from "../partials/donation";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -37,8 +36,6 @@ function Index() {
 
   // Partners states
   const [partners, setPartners] = useState<partners[]>([]);
-  const [partnersPage, setPartnersPage] = useState(1);
-  const [partnersTotalPages, setPartnersTotalPages] = useState(1);
 
   const fetchEvents = async () => {
     try {
@@ -67,10 +64,9 @@ function Index() {
   const fetchPartners = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/partners/?page=${partnersPage}`
+        `http://localhost:8000/api/partners/?page=1`
       );
       setPartners(response.data.results);
-      setPartnersTotalPages(response.data.total_pages);
     } catch (error) {
       console.error(error);
     }
@@ -86,7 +82,7 @@ function Index() {
 
   useEffect(() => {
     fetchPartners();
-  }, [partnersPage]);
+  }, []);
 
   const openModal = () => {
     setIsModalOpen(true);
