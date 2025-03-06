@@ -18,7 +18,6 @@ function Marketplace() {
   const [products, setProducts] = useState<Marketplace[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [isSearching, setIsSearching] = useState(false);
 
   const fetchProducts = async (page = 1, reset = false) => {
     try {
@@ -55,7 +54,6 @@ function Marketplace() {
   useEffect(() => {
     const handleScroll = () => {
       if (
-        !isSearching &&
         window.innerHeight + document.documentElement.scrollTop >=
           document.documentElement.offsetHeight - 100 &&
         currentPage < totalPages
@@ -66,7 +64,7 @@ function Marketplace() {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [currentPage, totalPages, isSearching]);
+  }, [currentPage, totalPages]);
 
   return (
     <App>
@@ -134,7 +132,6 @@ function Marketplace() {
               </Link>
             ))}
           </div>
-          {isSearching && <div className="text-center py-4">Loading...</div>}
         </section>
       </div>
     </App>
