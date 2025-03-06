@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-_v(=(2vb314sc^wg^#ej@ktm#9l(#1($jh_zh09v5pm+vghka6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["urugowoc.healthylifeinitiative.com", "localhost",]
+ALLOWED_HOSTS = ["urugowoc.healthylifeinitiative.com", "localhost", "api",]
 CORS_ALLOWED_ORIGINS = [
     "https://urugowoc.healthylifeinitiative.com",
     "http://localhost:8080"
