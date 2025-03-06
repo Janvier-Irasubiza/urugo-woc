@@ -23,10 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-_v(=(2vb314sc^wg^#ej@ktm#9l(#1($jh_zh09v5pm+vghka6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["urugowoc.healthylifeinitiative.com", "localhost",]
+CORS_ALLOWED_ORIGINS = [
+    "https://urugowoc.healthylifeinitiative.com",
+    "http://localhost:5173"
+]
 
 # Application definition
 
