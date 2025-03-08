@@ -6,7 +6,7 @@ services:
       context: ./urugo-woc-app
       dockerfile: DockerFile.prod
     ports:
-      - "8081:80"
+      - "5173"
     volumes:
       - ./urugo-woc-app:/app
     environment:
